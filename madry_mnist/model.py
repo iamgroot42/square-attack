@@ -10,8 +10,8 @@ import tensorflow as tf
 
 class Model(object):
   def __init__(self):
-    self.x_input = tf.placeholder(tf.float32, shape = [None, 784])
-    self.y_input = tf.placeholder(tf.int64, shape = [None])
+    self.x_input = tf.compat.v1.placeholder(tf.float32, shape = [None, 784])
+    self.y_input = tf.compat.v1.placeholder(tf.int64, shape = [None])
 
     self.x_image = tf.reshape(self.x_input, [-1, 28, 28, 1])
 
@@ -46,18 +46,18 @@ class Model(object):
         labels=self.y_input, logits=self.pre_softmax)
 
     self.xent_per_point = y_xent
-    self.xent = tf.reduce_sum(y_xent)
+    self.xent = tf.reduce_sum(input_tensor=y_xent)
 
-    self.y_pred = tf.argmax(self.pre_softmax, 1)
+    self.y_pred = tf.argmax(input=self.pre_softmax, axis=1)
 
     correct_prediction = tf.equal(self.y_pred, self.y_input)
 
-    self.num_correct = tf.reduce_sum(tf.cast(correct_prediction, tf.int64))
-    self.accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+    self.num_correct = tf.reduce_sum(input_tensor=tf.cast(correct_prediction, tf.int64))
+    self.accuracy = tf.reduce_mean(input_tensor=tf.cast(correct_prediction, tf.float32))
 
   @staticmethod
   def _weight_variable(shape):
-      initial = tf.truncated_normal(shape, stddev=0.1)
+      initial = tf.random.truncated_normal(shape, stddev=0.1)
       return tf.Variable(initial)
 
   @staticmethod
@@ -67,11 +67,11 @@ class Model(object):
 
   @staticmethod
   def _conv2d(x, W):
-      return tf.nn.conv2d(x, W, strides=[1,1,1,1], padding='SAME')
+      return tf.nn.conv2d(input=x, filters=W, strides=[1,1,1,1], padding='SAME')
 
   @staticmethod
   def _max_pool_2x2( x):
-      return tf.nn.max_pool(x,
+      return tf.nn.max_pool2d(input=x,
                             ksize = [1,2,2,1],
                             strides=[1,2,2,1],
                             padding='SAME')

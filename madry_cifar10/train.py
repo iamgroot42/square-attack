@@ -21,7 +21,7 @@ with open('config.json') as config_file:
     config = json.load(config_file)
 
 # seeding randomness
-tf.set_random_seed(config['tf_random_seed'])
+tf.compat.v1.set_random_seed(config['tf_random_seed'])
 np.random.seed(config['np_random_seed'])
 
 # Setting up training parameters
@@ -44,12 +44,12 @@ model = Model(mode='train')
 boundaries = [int(sss[0]) for sss in step_size_schedule]
 boundaries = boundaries[1:]
 values = [sss[1] for sss in step_size_schedule]
-learning_rate = tf.train.piecewise_constant(
+learning_rate = tf.compat.v1.train.piecewise_constant(
     tf.cast(global_step, tf.int32),
     boundaries,
     values)
 total_loss = model.mean_xent + weight_decay * model.weight_decay_loss
-train_step = tf.train.MomentumOptimizer(learning_rate, momentum).minimize(
+train_step = tf.compat.v1.train.MomentumOptimizer(learning_rate, momentum).minimize(
     total_loss,
     global_step=global_step)
 
@@ -72,25 +72,25 @@ if not os.path.exists(model_dir):
 # - train of different runs
 # - eval of different runs
 
-saver = tf.train.Saver(max_to_keep=3)
-tf.summary.scalar('accuracy adv train', model.accuracy)
-tf.summary.scalar('accuracy adv', model.accuracy)
-tf.summary.scalar('xent adv train', model.xent / batch_size)
-tf.summary.scalar('xent adv', model.xent / batch_size)
-tf.summary.image('images adv train', model.x_input)
-merged_summaries = tf.summary.merge_all()
+saver = tf.compat.v1.train.Saver(max_to_keep=3)
+tf.compat.v1.summary.scalar('accuracy adv train', model.accuracy)
+tf.compat.v1.summary.scalar('accuracy adv', model.accuracy)
+tf.compat.v1.summary.scalar('xent adv train', model.xent / batch_size)
+tf.compat.v1.summary.scalar('xent adv', model.xent / batch_size)
+tf.compat.v1.summary.image('images adv train', model.x_input)
+merged_summaries = tf.compat.v1.summary.merge_all()
 
 # keep the configuration file with the model for reproducibility
 shutil.copy('config.json', model_dir)
 
-with tf.Session() as sess:
+with tf.compat.v1.Session() as sess:
 
   # initialize data augmentation
   cifar = cifar10_input.AugmentedCIFAR10Data(raw_cifar, sess, model)
 
   # Initialize the summary writer, global variables, and our time counter.
-  summary_writer = tf.summary.FileWriter(model_dir, sess.graph)
-  sess.run(tf.global_variables_initializer())
+  summary_writer = tf.compat.v1.summary.FileWriter(model_dir, sess.graph)
+  sess.run(tf.compat.v1.global_variables_initializer())
   training_time = 0.0
 
   # Main training loop

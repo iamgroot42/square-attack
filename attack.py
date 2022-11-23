@@ -270,7 +270,7 @@ if __name__ == '__main__':
     parser.add_argument('--model', type=str, default='pt_resnet', choices=models.all_model_names, help='Model name.')
     parser.add_argument('--attack', type=str, default='square_linf', choices=['square_linf', 'square_l2'], help='Attack.')
     parser.add_argument('--exp_folder', type=str, default='exps', help='Experiment folder to store all output.')
-    parser.add_argument('--gpu', type=str, default='7', help='GPU number. Multiple GPUs are possible for PT models.')
+    parser.add_argument('--gpu', type=str, default='0', help='GPU number. Multiple GPUs are possible for PT models.')
     parser.add_argument('--n_ex', type=int, default=10000, help='Number of test ex to test on.')
     parser.add_argument('--p', type=float, default=0.05,
                         help='Probability of changing a coordinate. Note: check the paper for the best values. '

@@ -178,9 +178,12 @@ all_model_checkpoint_paths: "model.ckpt"
 
 ## Requirements
 - PyTorch 1.0.0
-- Tensorflow 1.12.0
+- Tensorflow 2.11.0
+- tf_slim
 
 
+## TF2
+Note that this codebase has been converted to TF2 using [tf_upgrade_v2](https://www.tensorflow.org/guide/migrate/upgrade).
 
 ## Contact
 Do you have a problem or question regarding the code?

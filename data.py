@@ -25,7 +25,7 @@ def load_cifar10(n_ex):
 
 def load_imagenet(n_ex, size=224):
     IMAGENET_SL = size
-    IMAGENET_PATH = "/scratch/maksym/imagenet/val_orig"
+    IMAGENET_PATH = "//p/blackboxsok/datasets/imagenet/val"
     imagenet = ImageFolder(IMAGENET_PATH,
                            transforms.Compose([
                                transforms.Resize(IMAGENET_SL),

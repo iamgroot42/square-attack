@@ -21,7 +21,7 @@ with open('config.json') as config_file:
     config = json.load(config_file)
 
 # Setting up training parameters
-tf.set_random_seed(config['random_seed'])
+tf.compat.v1.set_random_seed(config['random_seed'])
 
 max_num_training_steps = config['max_num_training_steps']
 num_output_steps = config['num_output_steps']
@@ -36,7 +36,7 @@ global_step = tf.contrib.framework.get_or_create_global_step()
 model = Model()
 
 # Setting up the optimizer
-train_step = tf.train.AdamOptimizer(1e-4).minimize(model.xent,
+train_step = tf.compat.v1.train.AdamOptimizer(1e-4).minimize(model.xent,
                                                    global_step=global_step)
 
 # Set up adversary
@@ -58,20 +58,20 @@ if not os.path.exists(model_dir):
 # - train of different runs
 # - eval of different runs
 
-saver = tf.train.Saver(max_to_keep=3)
-tf.summary.scalar('accuracy adv train', model.accuracy)
-tf.summary.scalar('accuracy adv', model.accuracy)
-tf.summary.scalar('xent adv train', model.xent / batch_size)
-tf.summary.scalar('xent adv', model.xent / batch_size)
-tf.summary.image('images adv train', model.x_image)
-merged_summaries = tf.summary.merge_all()
+saver = tf.compat.v1.train.Saver(max_to_keep=3)
+tf.compat.v1.summary.scalar('accuracy adv train', model.accuracy)
+tf.compat.v1.summary.scalar('accuracy adv', model.accuracy)
+tf.compat.v1.summary.scalar('xent adv train', model.xent / batch_size)
+tf.compat.v1.summary.scalar('xent adv', model.xent / batch_size)
+tf.compat.v1.summary.image('images adv train', model.x_image)
+merged_summaries = tf.compat.v1.summary.merge_all()
 
 shutil.copy('config.json', model_dir)
 
-with tf.Session() as sess:
+with tf.compat.v1.Session() as sess:
   # Initialize the summary writer, global variables, and our time counter.
-  summary_writer = tf.summary.FileWriter(model_dir, sess.graph)
-  sess.run(tf.global_variables_initializer())
+  summary_writer = tf.compat.v1.summary.FileWriter(model_dir, sess.graph)
+  sess.run(tf.compat.v1.global_variables_initializer())
   training_time = 0.0
 
   # Main training loop

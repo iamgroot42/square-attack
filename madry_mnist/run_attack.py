@@ -24,7 +24,7 @@ def run_attack(checkpoint, x_adv, epsilon):
 
     model = Model()
 
-    saver = tf.train.Saver()
+    saver = tf.compat.v1.train.Saver()
 
     num_eval_examples = 10000
     eval_batch_size = 64
@@ -42,7 +42,7 @@ def run_attack(checkpoint, x_adv, epsilon):
 
     y_pred = []  # label accumulator
 
-    with tf.Session() as sess:
+    with tf.compat.v1.Session() as sess:
         # Restore the checkpoint
         saver.restore(sess, checkpoint)
 

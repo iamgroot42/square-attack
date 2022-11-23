@@ -62,12 +62,12 @@ if not os.path.exists(eval_dir):
 last_checkpoint_filename = ''
 already_seen_state = False
 
-saver = tf.train.Saver()
-summary_writer = tf.summary.FileWriter(eval_dir)
+saver = tf.compat.v1.train.Saver()
+summary_writer = tf.compat.v1.summary.FileWriter(eval_dir)
 
 # A function for evaluating a single checkpoint
 def evaluate_checkpoint(filename):
-  with tf.Session() as sess:
+  with tf.compat.v1.Session() as sess:
     # Restore the checkpoint
     saver.restore(sess, filename)
 
@@ -110,13 +110,13 @@ def evaluate_checkpoint(filename):
     acc_nat = total_corr_nat / num_eval_examples
     acc_adv = total_corr_adv / num_eval_examples
 
-    summary = tf.Summary(value=[
-          tf.Summary.Value(tag='xent adv eval', simple_value= avg_xent_adv),
-          tf.Summary.Value(tag='xent adv', simple_value= avg_xent_adv),
-          tf.Summary.Value(tag='xent nat', simple_value= avg_xent_nat),
-          tf.Summary.Value(tag='accuracy adv eval', simple_value= acc_adv),
-          tf.Summary.Value(tag='accuracy adv', simple_value= acc_adv),
-          tf.Summary.Value(tag='accuracy nat', simple_value= acc_nat)])
+    summary = tf.compat.v1.Summary(value=[
+          tf.compat.v1.Summary.Value(tag='xent adv eval', simple_value= avg_xent_adv),
+          tf.compat.v1.Summary.Value(tag='xent adv', simple_value= avg_xent_adv),
+          tf.compat.v1.Summary.Value(tag='xent nat', simple_value= avg_xent_nat),
+          tf.compat.v1.Summary.Value(tag='accuracy adv eval', simple_value= acc_adv),
+          tf.compat.v1.Summary.Value(tag='accuracy adv', simple_value= acc_adv),
+          tf.compat.v1.Summary.Value(tag='accuracy nat', simple_value= acc_nat)])
     summary_writer.add_summary(summary, global_step.eval(sess))
 
     print('natural: {:.2f}%'.format(100 * acc_nat))

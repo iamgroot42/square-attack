@@ -45,4 +45,3 @@ def dfAttack(victim_model):   # victim_model should be model wrapped with foolbo
 def cwAttack(victim_model): # victim_model should be model wrapped with foolbox model
     attacker = attacks.CarliniWagnerL2Attack(victim_model, crt.Misclassification())
     return FoolboxAttackWrapper(attacker)
-    

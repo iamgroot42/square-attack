@@ -48,7 +48,7 @@ class ModelTF(Model):
     def __init__(self, model_name, batch_size, gpu_memory):
         super().__init__(batch_size, gpu_memory)
         model_folder = model_path_dict[model_name]
-        model_file = tf.train.latest_checkpoint(model_folder)
+        model_file = tf.train.latest_checkpoint(model_folder) #Okay with v2
         self.model = model_class_dict[model_name]()
         self.batch_size = batch_size
         self.model_name = model_name
@@ -56,10 +56,10 @@ class ModelTF(Model):
         if 'logits' not in self.model.__dict__:
             self.model.logits = self.model.pre_softmax
 
-        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=gpu_memory)
-        config = tf.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options)
-        self.sess = tf.Session(config=config)
-        tf.train.Saver().restore(self.sess, model_file)
+        gpu_options = tf.compat.v1.GPUOptions(per_process_gpu_memory_fraction=gpu_memory)
+        config = tf.compat.v1.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options)
+        self.sess = tf.compat.v1.Session(config=config)
+        tf.compat.v1.train.Saver().restore(self.sess, model_file)
 
     def predict(self, x):
         if 'mnist' in self.model_name:

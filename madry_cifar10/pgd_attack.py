@@ -32,14 +32,14 @@ class LinfPGDAttack:
                                     on_value=1.0,
                                     off_value=0.0,
                                     dtype=tf.float32)
-            correct_logit = tf.reduce_sum(label_mask * model.pre_softmax, axis=1)
-            wrong_logit = tf.reduce_max((1 - label_mask) * model.pre_softmax - 1e4 * label_mask, axis=1)
+            correct_logit = tf.reduce_sum(input_tensor=label_mask * model.pre_softmax, axis=1)
+            wrong_logit = tf.reduce_max(input_tensor=(1 - label_mask) * model.pre_softmax - 1e4 * label_mask, axis=1)
             loss = -tf.nn.relu(correct_logit - wrong_logit + 50)
         else:
             print('Unknown loss function. Defaulting to cross-entropy')
             loss = model.xent
 
-        self.grad = tf.gradients(loss, model.x_input)[0]
+        self.grad = tf.gradients(ys=loss, xs=model.x_input)[0]
 
     def perturb(self, x_nat, y, sess):
         """Given a set of examples (x_nat, y), returns a set of adversarial
@@ -84,14 +84,14 @@ if __name__ == '__main__':
                            config['step_size'],
                            config['random_start'],
                            config['loss_func'])
-    saver = tf.train.Saver()
+    saver = tf.compat.v1.train.Saver()
 
     data_path = config['data_path']
     cifar = cifar10_input.CIFAR10Data(data_path)
 
-    gpu_options = tf.GPUOptions(visible_device_list='7', per_process_gpu_memory_fraction=0.5)
-    tf_config = tf.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options)
-    with tf.Session(config=tf_config) as sess:
+    gpu_options = tf.compat.v1.GPUOptions(visible_device_list='7', per_process_gpu_memory_fraction=0.5)
+    tf_config = tf.compat.v1.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options)
+    with tf.compat.v1.Session(config=tf_config) as sess:
         # Restore the checkpoint
         saver.restore(sess, model_file)
 
